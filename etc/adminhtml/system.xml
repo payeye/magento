@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="payeye" translate="label" class="payeye-tab" sortOrder="100">
+            <label><![CDATA[PayEye]]></label>
+        </tab>
+        <section id="payeye" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>PeyEye</label>
+            <tab>payeye</tab>
+            <resource>PayEye_PayEye::general</resource>
+            <group id="general" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>Configuration</label>
+                <field id="enable" translate="label" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                </field>
+                <field id="test_mode" translate="label" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Test mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="heading" translate="comment" type="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <comment>You will receive the following information from your PayEye business manager, right after your online store has been verified and added to PayEye system. The data is needed for integration with the e-payeye service.</comment>
+                    <frontend_model>PayEye\PayEye\Block\Adminhtml\Form\Field\Heading</frontend_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
+                <field id="shop_id" translate="label" sortOrder="30" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>SHOP_ID</label>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="public_key" translate="label" sortOrder="40" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>PUBLIC_KEY</label>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="private_key" translate="label" sortOrder="50" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>PRIVATE_KEY</label>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="shipping_methods" translate="label" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Shipping method mapping</label>
+                    <depends>
+                        <field id="*/*/enable">1</field>
+                    </depends>
+                    <frontend_model>PayEye\PayEye\Block\Adminhtml\Form\Field\ShippingMethods</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

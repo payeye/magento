@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../vendor/magento/framework/Module/etc/module.xsd">
+    <module name="PayEye_PayEye">
+        <sequence>
+            <module name="PayEye_Lib" />
+            <module name="Magento_Catalog" />
+            <module name="Magento_Framework" />
+            <module name="Magento_Config" />
+            <module name="Magento_Sales"/>
+            <module name="Magento_Payment"/>
+            <module name="Magento_Quote"/>
+        </sequence>
+    </module>
+</config>

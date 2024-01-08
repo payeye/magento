@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Quote\Api\ChangeQuoteControlInterface">
+        <plugin name="payeyeAccessControl" type="PayEye\PayEye\Plugin\ChangeQuoteControl\AccessChangeQuoteControl" />
+    </type>
+    <type name="Magento\Framework\Reflection\DataObjectProcessor">
+        <plugin name="payeyeDataObjectProcessor" type="PayEye\PayEye\Plugin\DataObjectProcessor"/>
+    </type>
+    <type name="Magento\Customer\Model\Address\Validator\Country">
+        <plugin name="payeyeOptionalRegionValidator" type="PayEye\PayEye\Plugin\Validator\OptionalRegionValidator"/>
+    </type>
+</config>

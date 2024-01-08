@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="head.additional">
+            <block name="payeye.intialize" template="PayEye_PayEye::initialize.phtml" ifconfig="payeye/general/enable" />
+        </referenceBlock>
+        <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template" before="-" name="payeye.component"
+                   template="PayEye_PayEye::payeye.phtml" ifconfig="payeye/general/enable" />
+        </referenceContainer>
+    </body>
+</page>

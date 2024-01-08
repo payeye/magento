@@ -1,0 +1,10 @@
+"You will receive the following information from your PayEye business manager, right after your online store has been verified and added to PayEye system. The data is needed for integration with the e-payeye service.","Poniższe informacje otrzymasz od swojego opiekuna biznesowego po stronie PayEye, zaraz po weryfikacji i dodaniu Twojego sklepu internetowego do systemu PayEye. Dane są potrzebne do integracji z usługą e-payeye."
+"Shipping method mapping","Mapowanie metod dostawy"
+"Magento shipping method","Metoda wysyłki Magento"
+"PayEye shipping method","Metoda wysyłki PayEye"
+Action,Akcja
+Enable,Włącz
+Disable,Wyłącz
+Configuration,Konfiguracja
+"Test mode","Tryb testowy"
+"Order was placed with selected pickup point: %1","Zamówienie zostało złożone z wybranym punktem odbioru: %1"

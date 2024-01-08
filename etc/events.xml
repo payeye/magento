@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="checkout_cart_update_items_after">
+        <observer name="payeye_refresh_after_cart_item_update" instance="PayEye\PayEye\Observer\RefreshCart" />
+    </event>
+    <event name="sales_quote_remove_item">
+        <observer name="payeye_refresh_after_product_remove" instance="PayEye\PayEye\Observer\RefreshCart" />
+    </event>
+    <event name="sales_quote_product_add_after">
+        <observer name="payeye_refresh_after_product_add" instance="PayEye\PayEye\Observer\RefreshCart" />
+    </event>
+    <event name="sales_order_payment_place_end">
+        <observer name="payeye_after_place_order" instance="PayEye\PayEye\Observer\AfterPlaceOrderObserver"/>
+    </event>
+</config>

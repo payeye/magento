@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="PayEye\PayEye\Api\CartInterface" type="PayEye\PayEye\Model\Cart" />
+    <preference for="PayEye\PayEye\Api\OrderInterface" type="PayEye\PayEye\Model\Order" />
+    <preference for="PayEye\PayEye\Api\WidgetInterface" type="PayEye\PayEye\Model\Widget" />
+    <preference for="PayEye\PayEye\Api\GetCartHashInterface" type="PayEye\PayEye\Service\GetCartHash" />
+    <preference for="PayEye\PayEye\Api\CheckSignatureInterface" type="PayEye\PayEye\Service\CheckSignature" />
+    <preference for="PayEye\PayEye\Api\ErrorResponseInterface" type="PayEye\PayEye\Service\ErrorResponse" />
+    <preference for="PayEye\PayEye\Api\GetSignatureInterface" type="PayEye\PayEye\Service\GetSignature" />
+    <preference for="PayEye\PayEye\Api\GetQuoteByPayeyeCartIdInterface" type="PayEye\PayEye\Service\GetQuoteByPayeyeCartId" />
+    <preference for="PayEye\PayEye\Api\UpdateQuoteAddressInterface" type="PayEye\PayEye\Service\UpdateQuoteAddress" />
+    <preference for="PayEye\PayEye\Api\SetIsPayeyeOnQuoteInterface" type="PayEye\PayEye\Service\SetIsPayeyeOnQuote" />
+    <preference for="PayEye\PayEye\Api\PayeyeQuoteRepositoryInterface" type="PayEye\PayEye\Model\PayeyeQuoteRepository" />
+    <preference for="PayEye\PayEye\Api\PayeyeOrderPickupPointRepositoryInterface"
+                type="PayEye\PayEye\Model\PayeyeOrderPickupPointRepository" />
+    <type name="Magento\Quote\Api\CartRepositoryInterface">
+        <plugin name="create_payeye_cart_id" type="PayEye\PayEye\Plugin\QuoteRepository\CreatePayEyeCartId" />
+    </type>
+    <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="order_payeye_pickup_point" type="PayEye\PayEye\Plugin\OrderRepository\AssignPayeyePickupPoint" />
+    </type>
+    <virtualType name="PayEyePaymentFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="string">payeye</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayEyePaymentValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">PayEyePaymentCommandPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayEyePaymentValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayEyePaymentConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayEyePaymentConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayEyePaymentConfig</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayEyePaymentConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="string">payeye</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayEyePaymentCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="capture" xsi:type="string">Magento\Payment\Gateway\Command\NullCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PayEyeGeneralLogHandler" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="debug" xsi:type="object">PayEye\PayEye\Logger\Handler\PayeyeGeneralHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="PayEye\PayEye\Observer\RefreshCart">
+        <arguments>
+            <argument name="logger" xsi:type="object">PayEyeGeneralLogHandler</argument>
+        </arguments>
+    </type>
+    <type name="PayEye\PayEye\Model\Cart">
+        <arguments>
+            <argument name="logger" xsi:type="object">PayEyeGeneralLogHandler</argument>
+        </arguments>
+    </type>
+    <type name="PayEye\PayEye\Model\Order">
+        <arguments>
+            <argument name="logger" xsi:type="object">PayEyeGeneralLogHandler</argument>
+        </arguments>
+    </type>
+    <type name="PayEye\PayEye\Service\UpdateQuoteAddress">
+        <arguments>
+            <argument name="logger" xsi:type="object">PayEyeGeneralLogHandler</argument>
+        </arguments>
+    </type>
+</config>

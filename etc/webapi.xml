@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/api-payeye/carts" method="POST">
+        <service class="PayEye\PayEye\Api\CartInterface" method="get" />
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <route url="/V1/api-payeye/carts/promo-codes" method="POST">
+        <service class="PayEye\PayEye\Api\CartInterface" method="setPromoCode" />
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <route url="/V1/api-payeye/carts/promo-codes" method="DELETE">
+        <service class="PayEye\PayEye\Api\CartInterface" method="removePromoCode" />
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <route url="/V1/api-payeye/orders" method="POST">
+        <service class="PayEye\PayEye\Api\OrderInterface" method="place" />
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <route url="/V1/api-payeye/orders/status" method="PUT">
+        <service class="PayEye\PayEye\Api\OrderInterface" method="changeStatus" />
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <route url="/V1/api-payeye/widget/status" method="GET">
+        <service class="PayEye\PayEye\Api\WidgetInterface" method="getStatus" />
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+    <route url="/V1/api-payeye/widget/status" method="PUT">
+        <service class="PayEye\PayEye\Api\WidgetInterface" method="setStatus" />
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+</routes>

@@ -1,0 +1,24 @@
+{
+  "name": "payeye/magento",
+  "description": "Official PayEye integration plugin for Magento",
+  "require": {
+    "php": ">=7.4",
+    "chillerlan/php-qrcode": "^4.3"
+  },
+  "type": "magento2-module",
+  "authors": [
+    {
+      "name": "PayEye",
+      "email": "support@payeye.com",
+      "homepage": "https://payeye.com"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "PayEye\\PayEye\\": ""
+    }
+  }
+}
