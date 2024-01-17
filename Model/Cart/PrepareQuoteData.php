@@ -16,6 +16,7 @@ class PrepareQuoteData
     private PrepareProductsData $prepareProductsData;
     private PrepareTotalsData $prepareTotalsData;
     private PreparePromoCodes $preparePromoCodes;
+    private PrepareCartType $prepareCartType;
     private PrepareShippingMethods $prepareShippingMethods;
 
     /**
@@ -23,6 +24,7 @@ class PrepareQuoteData
      * @param PrepareProductsData $prepareProductsData
      * @param PrepareTotalsData $prepareTotalsData
      * @param PreparePromoCodes $preparePromoCodes
+     * @param PrepareCartType $prepareCartType
      * @param PrepareShippingMethods $prepareShippingMethods
      */
     public function __construct(
@@ -30,10 +32,12 @@ class PrepareQuoteData
         PrepareProductsData $prepareProductsData,
         PrepareTotalsData $prepareTotalsData,
         PreparePromoCodes $preparePromoCodes,
+        PrepareCartType $prepareCartType,
         PrepareShippingMethods $prepareShippingMethods
     ) {
         $this->prepareShippingMethods = $prepareShippingMethods;
         $this->preparePromoCodes = $preparePromoCodes;
+        $this->prepareCartType = $prepareCartType;
         $this->prepareTotalsData = $prepareTotalsData;
         $this->prepareProductsData = $prepareProductsData;
         $this->storeManager = $storeManager;
@@ -52,6 +56,7 @@ class PrepareQuoteData
         $quoteData['cart'] = $this->prepareTotalsData->get($quote);
         $quoteData['shippingId'] = $quote->getShippingAddress()->getShippingMethod() ?: null;
         $quoteData['promoCodes'] = $this->preparePromoCodes->get($quote);
+        $quoteData['cartType'] = $this->prepareCartType->get($quote);
         $quoteData['currency'] = $quote->getCurrency()->getStoreCurrencyCode() ?:
             $this->storeManager->getStore()->getCurrentCurrency()->getCode();
         $quoteData['shippingMethods'] = $shippingAddressSended ? $this->prepareShippingMethods->get($quote) : [];

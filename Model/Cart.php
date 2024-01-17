@@ -9,6 +9,7 @@ namespace PayEye\PayEye\Model;
 
 use Magento\Framework\Webapi\Rest\Request as RestRequest;
 use Magento\Quote\Api\CartRepositoryInterface;
+use PayEye\Lib\Enum\CartType;
 use PayEye\Lib\Model\Billing;
 use PayEye\Lib\Model\Shipping;
 use PayEye\Lib\Cart\CartResponseModel;
@@ -137,8 +138,6 @@ class Cart implements CartInterface
             "cartHash"
         ];
         $response['signature'] = $this->getSignature->get($response);
-
-        $response['cartType'] = 'STANDARD';
 
         return CartResponseModel::createFromArray($response);
     }
