@@ -24,6 +24,7 @@ class Widget implements WidgetInterface
     private const ORDER_STATUSES = [
         MagentoOrder::STATE_PENDING_PAYMENT => OrderStatus::ORDER_CREATED,
         MagentoOrder::STATE_PROCESSING => OrderStatus::SUCCESS,
+        MagentoOrder::STATE_COMPLETE => OrderStatus::SUCCESS,
         MagentoOrder::STATE_CANCELED => OrderStatus::REJECTED
     ];
     private Config $config;
@@ -73,18 +74,15 @@ class Widget implements WidgetInterface
         $widgetStatus->setOpen((bool)$payeyeQuote->getOpen());
 
         if ($quote->getReservedOrderId()) {
-            try {
-                $order = $this->orderFactory->create()->loadByIncrementId($quote->getReservedOrderId());
-                if ($order->getId()) {
-                    $widgetStatus->setStatus(self::ORDER_STATUSES[$order->getStatus()]);
-                    $widgetStatus->setCheckoutUrl($this->urlBuilder->getUrl('checkout/onepage/success'));
-                    $this->checkoutSession->setLastQuoteId($order->getQuoteId());
-                    $this->checkoutSession->setLastSuccessQuoteId($order->getQuoteId());
-                    $this->checkoutSession->setLastOrderId($order->getId());
-                    $this->checkoutSession->setLastRealOrderId($order->getIncrementId());
-                    $this->checkoutSession->setLastOrderStatus($order->getStatus());
-                }
-            }catch (\Exception $e) {
+            $order = $this->orderFactory->create()->loadByIncrementId($quote->getReservedOrderId());
+            if ($order->getId()) {
+                $widgetStatus->setStatus(self::ORDER_STATUSES[$order->getStatus()]);
+                $widgetStatus->setCheckoutUrl($this->urlBuilder->getUrl('checkout/onepage/success'));
+                $this->checkoutSession->setLastQuoteId($order->getQuoteId());
+                $this->checkoutSession->setLastSuccessQuoteId($order->getQuoteId());
+                $this->checkoutSession->setLastOrderId($order->getId());
+                $this->checkoutSession->setLastRealOrderId($order->getIncrementId());
+                $this->checkoutSession->setLastOrderStatus($order->getStatus());
             }
         }
 
