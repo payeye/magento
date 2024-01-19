@@ -59,6 +59,26 @@
                     <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                 </field>
             </group>
+            <group id="ui" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
+                <label>Widget positioning</label>
+                <field id="side" translate="label" sortOrder="0" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Side</label>
+                    <source_model>PayEye\PayEye\Model\Config\Source\WidgetSide</source_model>
+                </field>
+                <field id="side_distance" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Side Distance (pixels)</label>
+                    <validate>validate-zero-or-greater validate-digits</validate>
+                </field>
+                <field id="bottom_distance" translate="label" sortOrder="20" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Bottom Distance (pixels)</label>
+                    <validate>validate-zero-or-greater validate-digits</validate>
+                </field>
+                <field id="z_index" translate="label" sortOrder="30" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>z-index (pixels)</label>
+                    <validate>validate-zero-or-greater validate-digits</validate>
+                </field>
+            </group>
         </section>
     </system>
 </config>

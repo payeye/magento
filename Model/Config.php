@@ -20,6 +20,10 @@ class Config extends AbstractConfig
     private const XML_PATH_PAYEYE_PUBLIC_KEY = 'payeye/general/public_key';
     private const XML_PATH_PAYEYE_PRIVATE_KEY = 'payeye/general/private_key';
     private const XML_PATH_PAYEYE_SHIPPING_METHODS = 'payeye/general/shipping_methods';
+    private const XML_PATH_PAYEYE_UI_SIDE = 'payeye/ui/side';
+    private const XML_PATH_PAYEYE_UI_SIDE_DISTANCE = 'payeye/ui/side_distance';
+    private const XML_PATH_PAYEYE_UI_BOTTOM_DISTANCE = 'payeye/ui/bottom_distance';
+    private const XML_PATH_PAYEYE_UI_Z_INDEX = 'payeye/ui/z_index';
     private const API_DEEP_LINK_URL = 'https://payment.payeye.com/order';
     private const TEST_API_DEEP_LINK_URL = 'https://dev-payment.payeye.com/order';
 
@@ -46,6 +50,50 @@ class Config extends AbstractConfig
     {
         return $this->scopeConfig->isSetFlag(
             self::XML_PATH_PAYEYE_ENABLED,
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getUiSide(): string
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_PAYEYE_UI_SIDE,
+            ScopeInterface::SCOPE_STORE
+        ) ?? '';
+    }
+
+    /**
+     * @return int
+     */
+    public function getUiSideDistance(): int
+    {
+        return (int)$this->scopeConfig->getValue(
+            self::XML_PATH_PAYEYE_UI_SIDE_DISTANCE,
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return int
+     */
+    public function getUiBottomDistance(): int
+    {
+        return (int)$this->scopeConfig->getValue(
+            self::XML_PATH_PAYEYE_UI_BOTTOM_DISTANCE,
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return int
+     */
+    public function getUiZIndex(): int
+    {
+        return (int)$this->scopeConfig->getValue(
+            self::XML_PATH_PAYEYE_UI_Z_INDEX,
             ScopeInterface::SCOPE_STORE
         );
     }
