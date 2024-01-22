@@ -5,6 +5,8 @@
     <preference for="PayEye\PayEye\Api\WidgetInterface" type="PayEye\PayEye\Model\Widget" />
     <preference for="PayEye\PayEye\Api\GetCartHashInterface" type="PayEye\PayEye\Service\GetCartHash" />
     <preference for="PayEye\PayEye\Api\CheckSignatureInterface" type="PayEye\PayEye\Service\CheckSignature" />
+    <preference for="PayEye\PayEye\Api\HealthcheckInterface" type="PayEye\PayEye\Model\Healthcheck" />
+    <preference for="PayEye\PayEye\Api\Data\HealthcheckDataInterface" type="PayEye\PayEye\Model\Healthcheck\Data" />
     <preference for="PayEye\PayEye\Api\ErrorResponseInterface" type="PayEye\PayEye\Service\ErrorResponse" />
     <preference for="PayEye\PayEye\Api\GetSignatureInterface" type="PayEye\PayEye\Service\GetSignature" />
     <preference for="PayEye\PayEye\Api\GetQuoteByPayeyeCartIdInterface" type="PayEye\PayEye\Service\GetQuoteByPayeyeCartId" />

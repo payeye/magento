@@ -43,4 +43,10 @@
             <resource ref="anonymous" />
         </resources>
     </route>
+    <route url="/V1/api-payeye/healthcheck" method="GET">
+        <service class="PayEye\PayEye\Api\HealthcheckInterface" method="get" />
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
 </routes>
