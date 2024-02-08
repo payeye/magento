@@ -7,46 +7,55 @@ declare(strict_types=1);
 
 namespace PayEye\PayEye\Block\Adminhtml\Form\Field;
 
-use Magento\Shipping\Model\Config\Source\AllMethods;
+use Magento\Shipping\Model\Config;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\View\Element\Context;
 use Magento\Framework\View\Element\Html\Select;
+
 class MagentoShippingMethodColumn extends Select
 {
     /**
-     * @var AllMethods
+     * @var Config
      */
-    private $allMethods;
+    private $shippingConfig;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
 
     public function __construct(
         Context $context,
-        AllMethods $allMethods,
+        Config $shippingConfig,
+        StoreManagerInterface $storeManager,
         array $data = []
     ) {
-        $this->allMethods = $allMethods;
+        $this->shippingConfig = $shippingConfig;
+        $this->storeManager = $storeManager;
         parent::__construct($context, $data);
     }
 
-    /**
-     * Render block HTML
-     *
-     * @return string
-     */
     protected function _toHtml(): string
     {
         if (!$this->getOptions()) {
-            $this->setOptions($this->allMethods->toOptionArray());
+            $this->setOptions($this->getActiveShippingMethods());
         }
         return parent::_toHtml();
     }
 
-    /**
-     * Set "name" for <select> element
-     *
-     * @param string $value
-     * @return $this
-     */
-    public function setInputName(string $value): MagentoShippingMethodColumn
+    private function getActiveShippingMethods()
     {
-        return $this->setName($value);
+        $activeMethods = [];
+        $allMethods = $this->shippingConfig->getActiveCarriers($this->storeManager->getStore()->getId());
+        foreach ($allMethods as $carrierCode => $carrierModel) {
+            if ($carrierMethods = $carrierModel->getAllowedMethods()) {
+                foreach ($carrierMethods as $methodCode => $methodName) {
+                    $code = $carrierCode . '_' . $methodCode;
+                    $label = sprintf('[%s] %s', $carrierCode, $methodName);
+                    $activeMethods[] = ['value' => $code, 'label' => $label];
+                }
+            }
+        }
+        return $activeMethods;
     }
 }
