@@ -7,10 +7,10 @@ declare(strict_types=1);
 
 namespace PayEye\PayEye\Block\Adminhtml\Form\Field;
 
-use Magento\Shipping\Model\Config;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\View\Element\Context;
 use Magento\Framework\View\Element\Html\Select;
+use Magento\Shipping\Model\Config;
+use Magento\Store\Model\ScopeInterface;
 
 class MagentoShippingMethodColumn extends Select
 {
@@ -19,19 +19,12 @@ class MagentoShippingMethodColumn extends Select
      */
     private $shippingConfig;
 
-    /**
-     * @var StoreManagerInterface
-     */
-    private $storeManager;
-
     public function __construct(
         Context $context,
         Config $shippingConfig,
-        StoreManagerInterface $storeManager,
         array $data = []
     ) {
         $this->shippingConfig = $shippingConfig;
-        $this->storeManager = $storeManager;
         parent::__construct($context, $data);
     }
 
@@ -43,19 +36,30 @@ class MagentoShippingMethodColumn extends Select
         return parent::_toHtml();
     }
 
-    private function getActiveShippingMethods()
+    private function getActiveShippingMethods(): array
     {
-        $activeMethods = [];
-        $allMethods = $this->shippingConfig->getActiveCarriers($this->storeManager->getStore()->getId());
-        foreach ($allMethods as $carrierCode => $carrierModel) {
-            if ($carrierMethods = $carrierModel->getAllowedMethods()) {
+        $methods = [];
+        $activeCarriers = $this->shippingConfig->getActiveCarriers();
+        foreach ($activeCarriers as $carrierCode => $carrierModel) {
+            $carrierMethods = $carrierModel->getAllowedMethods();
+            if ($carrierMethods) {
+                $carrierTitle = $this->_scopeConfig->getValue(
+                    'carriers/' . $carrierCode . '/title',
+                    ScopeInterface::SCOPE_STORE
+                );
+                $methodsGroup = ['label' => $carrierTitle, 'value' => []];
                 foreach ($carrierMethods as $methodCode => $methodName) {
                     $code = $carrierCode . '_' . $methodCode;
-                    $label = sprintf('[%s] %s', $carrierCode, $methodName);
-                    $activeMethods[] = ['value' => $code, 'label' => $label];
+                    $methodsGroup['value'][] = ['value' => $code, 'label' => '[' . $carrierCode . '] ' . $methodName];
                 }
+                $methods[] = $methodsGroup;
             }
         }
-        return $activeMethods;
+        return $methods;
+    }
+
+    public function setInputName(string $value): self
+    {
+        return $this->setName($value);
     }
 }

@@ -74,6 +74,7 @@ class PayEyeSection extends DataObject implements SectionSourceInterface
         }
 
         return [
+            'apiVersion' => $this->config->getApiVersion(),
             'deepLink' => $this->getDeepLink(),
             'cart' => [
                 'id' => $this->getCartUUid(),

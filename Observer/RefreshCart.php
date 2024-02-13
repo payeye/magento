@@ -39,7 +39,7 @@ class RefreshCart implements ObserverInterface
         $this->logger = $logger;
         $this->config = $config;
         $payeyeLibConfig = PayEyeLibConfig::create($this->config->getApiUrl(), $this->config->getApiDeepLinkUrl());
-        $this->httpClient = PayEyeHttpClient::create($payeyeLibConfig);
+        $this->httpClient = PayEyeHttpClient::create($payeyeLibConfig, $this->config->getApiVersion());
     }
 
     public function execute(Observer $observer): void
@@ -97,6 +97,7 @@ class RefreshCart implements ObserverInterface
 
             $this->httpClient->refreshCart($request,$authService);
         } catch(\Exception $e) {
+            die('aaaaa');
             $this->logger->error($e->getMessage());
         }
     }

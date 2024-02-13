@@ -1,5 +1,6 @@
 <?php
 $helper = $this->helper('PayEye\PayEye\Helper\Data');
+$apiVersion = $helper->getApiVersion();
 $uiSide = $helper->getUiSide();
 $uiSideDistance = $helper->getUiSideDistance();
 $uiBottomDistance = $helper->getUiBottomDistance();
@@ -9,7 +10,7 @@ $uiZIndex = $helper->getUiZIndex();
 <script>
     var payeye = {
         "platform": "MAGENTO",
-        "apiUrl": "<?= $this->getBaseUrl() ?>rest/V1/api-payeye",
+        "apiUrl": "<?= $this->getBaseUrl() ?>rest/V<?= $apiVersion ?>/api-payeye",
         "side": "<?= mb_strtoupper($uiSide) ?>",
         "ui":{
             "zIndex": <?= $uiZIndex ?>,

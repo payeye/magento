@@ -21,6 +21,11 @@ class Data extends AbstractHelper
         parent::__construct($context);
     }
 
+    public function getApiVersion()
+    {
+        return $this->config->getApiVersion();
+    }
+
     public function getUiSide()
     {
         return $this->config->getUiSide();

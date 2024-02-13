@@ -36,6 +36,7 @@ define([
             if (!data.deepLink && !data.cart) return;
 
             return {
+                apiVersion: data.apiVersion,
                 deepLink: data.deepLink,
                 cart: data.cart
             }
@@ -47,7 +48,7 @@ define([
             if (!updatedPayEyeData.cart.id) return;
 
             var updateRequestInterval = setInterval(function () {
-                var serviceUrl = `rest/V1/api-payeye/widget/status?cartId=${updatedPayEyeData.cart.id}`;
+                var serviceUrl = `rest/V${updatedPayEyeData.apiVersion}/api-payeye/widget/status?cartId=${updatedPayEyeData.cart.id}`;
 
                 $.ajax({
                     url: urlBuilder.build(serviceUrl),

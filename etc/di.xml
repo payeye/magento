@@ -3,6 +3,7 @@
     <preference for="PayEye\PayEye\Api\CartInterface" type="PayEye\PayEye\Model\Cart" />
     <preference for="PayEye\PayEye\Api\OrderInterface" type="PayEye\PayEye\Model\Order" />
     <preference for="PayEye\PayEye\Api\WidgetInterface" type="PayEye\PayEye\Model\Widget" />
+    <preference for="PayEye\PayEye\Api\PluginInterface" type="PayEye\PayEye\Model\Plugin" />
     <preference for="PayEye\PayEye\Api\GetCartHashInterface" type="PayEye\PayEye\Service\GetCartHash" />
     <preference for="PayEye\PayEye\Api\CheckSignatureInterface" type="PayEye\PayEye\Service\CheckSignature" />
     <preference for="PayEye\PayEye\Api\HealthcheckInterface" type="PayEye\PayEye\Model\Healthcheck" />
