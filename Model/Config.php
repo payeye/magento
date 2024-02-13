@@ -24,11 +24,13 @@ class Config extends AbstractConfig
     private const XML_PATH_PAYEYE_UI_SIDE_DISTANCE = 'payeye/ui/side_distance';
     private const XML_PATH_PAYEYE_UI_BOTTOM_DISTANCE = 'payeye/ui/bottom_distance';
     private const XML_PATH_PAYEYE_UI_Z_INDEX = 'payeye/ui/z_index';
-    private const API_DEEP_LINK_URL = 'https://payment.payeye.com/order';
-    private const TEST_API_DEEP_LINK_URL = 'https://dev-payment.payeye.com/order';
 
+    private const PLUGIN_VERSION = '1.0.6';
+
+    private const API_VERSION = 2;
     private const API_URL = 'https://prod3a-api.payeye.com/ecommerce-transaction';
-    private const TEST_API_URL = 'https://uat3a-api.payeye.com/ecommerce-transaction';
+    private const API_DEEP_LINK_URL = 'https://payment.payeye.com/order';
+
     private ScopeConfigInterface $scopeConfig;
     private Json $jsonSerializer;
 
@@ -101,9 +103,25 @@ class Config extends AbstractConfig
     /**
      * @return string
      */
+    public function getPluginVersion(): string
+    {
+        return self::PLUGIN_VERSION;
+    }
+
+    /**
+     * @return int
+     */
+    public function getApiVersion(): int
+    {
+        return self::API_VERSION;
+    }
+
+    /**
+     * @return string
+     */
     public function getApiUrl(): string
     {
-        return $this->isTestMode() ? self::TEST_API_URL : self::API_URL;
+        return self::API_URL;
     }
 
     /**
@@ -111,14 +129,13 @@ class Config extends AbstractConfig
      */
     public function getApiDeepLinkUrl(): string
     {
-        return $this->isTestMode() ? self::TEST_API_DEEP_LINK_URL : self::API_DEEP_LINK_URL;
+        return self::API_DEEP_LINK_URL;
     }
-
 
     /**
      * @return bool
      */
-    private function isTestMode(): bool
+    public function isTestMode(): bool
     {
         return $this->scopeConfig->isSetFlag(
             self::XML_PATH_PAYEYE_TEST_MODE,

@@ -28,16 +28,16 @@
     <action name="checkout/sidebar/updateItemQty">
         <section name="payeye"/>
     </action>
-    <action name="rest/*/V1/carts/*/payment-information">
+    <action name="rest/*/V2/carts/*/payment-information">
         <section name="payeye"/>
     </action>
-    <action name="rest/*/V1/guest-carts/*/payment-information">
+    <action name="rest/*/V2/guest-carts/*/payment-information">
         <section name="payeye"/>
     </action>
-    <action name="rest/*/V1/guest-carts/*/selected-payment-method">
+    <action name="rest/*/V2/guest-carts/*/selected-payment-method">
         <section name="payeye"/>
     </action>
-    <action name="rest/*/V1/carts/*/selected-payment-method">
+    <action name="rest/*/V2/carts/*/selected-payment-method">
         <section name="payeye"/>
     </action>
 </config>
