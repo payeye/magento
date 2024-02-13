@@ -25,7 +25,7 @@ class Config extends AbstractConfig
     private const XML_PATH_PAYEYE_UI_BOTTOM_DISTANCE = 'payeye/ui/bottom_distance';
     private const XML_PATH_PAYEYE_UI_Z_INDEX = 'payeye/ui/z_index';
 
-    private const PLUGIN_VERSION = '1.0.6';
+    private const PLUGIN_VERSION = '1.0.7';
 
     private const API_VERSION = 2;
     private const API_URL = 'https://prod3a-api.payeye.com/ecommerce-transaction';

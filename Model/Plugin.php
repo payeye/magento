@@ -13,6 +13,8 @@ use PayEye\Lib\Plugin\PluginStatusResponseModel;
 use PayEye\PayEye\Api\PluginInterface;
 use PayEye\PayEye\Api\CheckSignatureInterface;
 use PayEye\PayEye\Api\ErrorResponseInterface;
+use PayEye\Lib\Enum\SignatureFrom;
+use PayEye\PayEye\Api\GetSignatureInterface;
 
 class Plugin implements PluginInterface
 {
@@ -20,17 +22,20 @@ class Plugin implements PluginInterface
     private ProductMetadataInterface $productMetadata;
     private CheckSignatureInterface $checkSignature;
     private ErrorResponseInterface $errorResponse;
+    private GetSignatureInterface $getSignature;
 
     public function __construct(
         Config $config,
         ProductMetadataInterface $productMetadata,
         CheckSignatureInterface $checkSignature,
-        ErrorResponseInterface $errorResponse
+        ErrorResponseInterface $errorResponse,
+        GetSignatureInterface $getSignature,
     ) {
         $this->productMetadata = $productMetadata;
         $this->config = $config;
         $this->checkSignature = $checkSignature;
         $this->errorResponse = $errorResponse;
+        $this->getSignature = $getSignature;
     }
 
     /**
@@ -39,27 +44,34 @@ class Plugin implements PluginInterface
      */
     public function getStatus(string $signature): PluginStatusResponseModel
     {
-        if (!$this->checkSignature->check(['signatureFrom' => [], 'signature' => $signature])) {
+        $shopId = $this->config->getShopId();
+
+        if (!$this->checkSignature->check([
+            'signatureFrom' => SignatureFrom::PLUGIN_STATUS_REQUEST,
+            'signature' => $signature,
+            'shopIdentifier' => $shopId
+        ])) {
             $this->errorResponse->throw(new SignatureNotMatchedException());
         }
 
-        $shopId = $this->config->getShopId();
-
         $pluginMode = $this->config->isTestMode() ? 'INTEGRATION' : 'PRODUCTION';
-        $pluginEven = $this->config->isEnabled() ? 'PLUGIN_ACTIVATED' : 'PLUGIN_DEACTIVATED';
+        $pluginEvent = $this->config->isEnabled() ? 'PLUGIN_ACTIVATED' : 'PLUGIN_DEACTIVATED';
         $phpVersion = 'PHP ' . phpversion();
 
-        $pluginStatus = PluginStatusResponseModel::create(
-            $this->config->getApiVersion(),
-            $shopId,
-            $pluginMode,
-            $phpVersion,
-            $this->productMetadata->getVersion(),
-            $this->config->getPluginVersion(),
-            $pluginEven,
-            []
-        );
+        $response = [
+            'apiVersion' => $this->config->getApiVersion(),
+            'shopIdentifier' => $shopId,
+            'pluginMode' => $pluginMode,
+            'languageVersion' => $phpVersion,
+            'platformVersion' => $this->productMetadata->getVersion(),
+            'pluginVersion' => $this->config->getPluginVersion(),
+            'pluginEvent' => $pluginEvent,
+            'pluginConfig' => [],
+            'signatureFrom' => SignatureFrom::PLUGIN_UPDATE_STATUS_REQUEST
+        ];
 
-        return $pluginStatus;
+        $response['signature'] = $this->getSignature->get($response);
+
+        return PluginStatusResponseModel::createFromArray($response);
     }
 }
