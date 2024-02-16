@@ -6,6 +6,7 @@
 namespace PayEye\PayEye\Api;
 
 use PayEye\Lib\Model\Billing;
+use PayEye\Lib\Model\Invoice;
 use PayEye\Lib\Model\Shipping;
 use PayEye\Lib\Order\OrderCreateResponseModel;
 use PayEye\Lib\Order\OrderUpdateStatusResponseModel;
@@ -23,6 +24,7 @@ interface OrderInterface
      * @param Billing $billing
      * @param Shipping $shipping
      * @param bool $hasInvoice
+     * @param Invoice $invoiceDetails
      * @return \PayEye\Lib\Order\OrderCreateResponseModel
      */
     public function place(string $cartId,
@@ -33,7 +35,8 @@ interface OrderInterface
         string $shippingProvider,
         Billing $billing,
         Shipping $shipping,
-        bool $hasInvoice = false
+        bool $hasInvoice = false,
+        Invoice $invoiceDetails = null,
     ): OrderCreateResponseModel;
 
     /**

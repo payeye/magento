@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace PayEye\PayEye\Model\Order;
 
 use PayEye\Lib\Model\Billing;
+use PayEye\Lib\Model\Invoice;
 use PayEye\Lib\Model\Shipping;
 use PayEye\Lib\Order\OrderCreateRequestModel;
 
@@ -23,6 +24,7 @@ class PrepareOrderCreateRequestModel
      * @param Billing $billing
      * @param Shipping $shipping
      * @param bool $hasInvoice
+     * @param Invoice $invoice
      * @return OrderCreateRequestModel
      */
     public function execute(
@@ -34,7 +36,8 @@ class PrepareOrderCreateRequestModel
         string $shippingProvider,
         Billing $billing,
         Shipping $shipping,
-        bool $hasInvoice = false
+        bool $hasInvoice = false,
+        Invoice $invoice = null,
     ): OrderCreateRequestModel {
         $billingArray = null;
         if ($billing) {
@@ -60,6 +63,14 @@ class PrepareOrderCreateRequestModel
             }
         }
 
+        $invoiceArray = null;
+        if ($invoice) {
+            $invoiceArray = $invoice->toArray();
+            if ($invoice->getAddress()) {
+                $invoiceArray['address'] = $invoice->getAddress()->toArray();
+            }
+        }
+
         return OrderCreateRequestModel::createFromArray([
             'cartId' => $cartId,
             'signatureFrom' => $signatureFrom,
@@ -69,7 +80,8 @@ class PrepareOrderCreateRequestModel
             'shippingProvider' => $shippingProvider,
             'billing' => $billingArray,
             'shipping' => $shippingArray,
-            'hasInvoice' => $hasInvoice
+            'hasInvoice' => $hasInvoice,
+            'invoice' => $invoiceArray,
         ]);
     }
 }

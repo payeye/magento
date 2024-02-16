@@ -126,6 +126,7 @@ class Cart implements CartInterface
 
         $response = $this->prepareQuoteData->get($quote, (bool)$request->getShipping());
 
+        $response['supportedFeatures'] = ['INVOICE'];
         $response['cartHash'] = $this->getCartHash->get($response);
         $response['signatureFrom'] = [
             "cart",
