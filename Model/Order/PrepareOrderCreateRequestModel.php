@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace PayEye\PayEye\Model\Order;
 
 use PayEye\Lib\Model\Billing;
-use PayEye\Lib\Model\Invoice;
+use PayEye\Lib\Model\InvoiceDetails;
 use PayEye\Lib\Model\Shipping;
 use PayEye\Lib\Order\OrderCreateRequestModel;
 
@@ -24,7 +24,7 @@ class PrepareOrderCreateRequestModel
      * @param Billing $billing
      * @param Shipping $shipping
      * @param bool $hasInvoice
-     * @param Invoice $invoice
+     * @param InvoiceDetails $invoiceDetails
      * @return OrderCreateRequestModel
      */
     public function execute(
@@ -37,7 +37,7 @@ class PrepareOrderCreateRequestModel
         Billing $billing,
         Shipping $shipping,
         bool $hasInvoice = false,
-        Invoice $invoice = null,
+        InvoiceDetails $invoiceDetails = null,
     ): OrderCreateRequestModel {
         $billingArray = null;
         if ($billing) {
@@ -63,11 +63,11 @@ class PrepareOrderCreateRequestModel
             }
         }
 
-        $invoiceArray = null;
-        if ($invoice) {
-            $invoiceArray = $invoice->toArray();
-            if ($invoice->getAddress()) {
-                $invoiceArray['address'] = $invoice->getAddress()->toArray();
+        $invoiceDetailsArray = null;
+        if ($invoiceDetails) {
+            $invoiceDetailsArray = $invoiceDetails->toArray();
+            if ($invoiceDetails->getAddress()) {
+                $invoiceDetailsArray['address'] = $invoiceDetails->getAddress()->toArray();
             }
         }
 
@@ -81,7 +81,7 @@ class PrepareOrderCreateRequestModel
             'billing' => $billingArray,
             'shipping' => $shippingArray,
             'hasInvoice' => $hasInvoice,
-            'invoice' => $invoiceArray,
+            'invoiceDetails' => $invoiceDetailsArray,
         ]);
     }
 }
