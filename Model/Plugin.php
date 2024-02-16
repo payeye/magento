@@ -66,7 +66,7 @@ class Plugin implements PluginInterface
             'platformVersion' => $this->productMetadata->getVersion(),
             'pluginVersion' => $this->config->getPluginVersion(),
             'pluginEvent' => $pluginEvent,
-            'pluginConfig' => [],
+            'pluginConfig' => null,
             'signatureFrom' => SignatureFrom::PLUGIN_UPDATE_STATUS_REQUEST
         ];
 

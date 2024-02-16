@@ -13,6 +13,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\UrlInterface;
 use Magento\Quote\Api\Data\CartInterface as MagentoCartInterface;
+use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\CartManagementInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\OrderStatusHistoryRepositoryInterface;
@@ -21,6 +22,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use PayEye\Lib\Exception\OrderFailedException;
 use PayEye\Lib\Model\Billing;
 use PayEye\Lib\Model\Shipping;
+use PayEye\Lib\Model\Invoice;
 use PayEye\Lib\Service\AmountService;
 use PayEye\Lib\Order\OrderCreateResponseModel;
 use PayEye\Lib\Order\OrderUpdateStatusRequestModel;
@@ -68,6 +70,7 @@ class Order implements OrderInterface
     private OrderStatusHistoryRepositoryInterface $orderStatusHistoryRepository;
     private LoggerInterface $logger;
     private Data $checkoutHelper;
+    private CartRepositoryInterface $cartRepository;
 
     /**
      * @param Config $config
@@ -88,6 +91,7 @@ class Order implements OrderInterface
      * @param OrderStatusHistoryRepositoryInterface $orderStatusHistoryRepository
      * @param LoggerInterface $logger
      * @param Data $checkoutHelper
+     * @param CartRepositoryInterface $cartRepository
      */
     public function __construct(
         Config $config,
@@ -107,7 +111,8 @@ class Order implements OrderInterface
         AmountService $amountService,
         OrderStatusHistoryRepositoryInterface $orderStatusHistoryRepository,
         LoggerInterface $logger,
-        Data $checkoutHelper
+        Data $checkoutHelper,
+        CartRepositoryInterface $cartRepository
     ) {
         $this->logger = $logger;
         $this->orderStatusHistoryRepository = $orderStatusHistoryRepository;
@@ -127,6 +132,7 @@ class Order implements OrderInterface
         $this->storeManager = $storeManager;
         $this->config = $config;
         $this->checkoutHelper = $checkoutHelper;
+        $this->cartRepository = $cartRepository;
     }
 
     /**
@@ -139,6 +145,7 @@ class Order implements OrderInterface
      * @param Billing $billing
      * @param Shipping $shipping
      * @param bool $hasInvoice
+     * @param Invoice $invoiceDetails
      * @return \PayEye\Lib\Order\OrderCreateResponseModel
      */
     public function place(
@@ -150,7 +157,8 @@ class Order implements OrderInterface
         string $shippingProvider,
         Billing $billing,
         Shipping $shipping,
-        bool $hasInvoice = false
+        bool $hasInvoice = false,
+        Invoice $invoiceDetails = null,
     ): OrderCreateResponseModel {
         $request = $this->prepareOrderCreateRequestModel->execute(
             $cartId,
@@ -161,11 +169,25 @@ class Order implements OrderInterface
             $shippingProvider,
             $billing,
             $shipping,
-            $hasInvoice
+            $hasInvoice,
+            $invoiceDetails
         );
 
         $this->checkIfCanProcess($request->toArray());
         $quote = $this->getQuoteByPayeyeCartId->getQuote($cartId);
+
+        if ($request->hasInvoice()) {
+            /** @var \Magento\Quote\Api\Data\AddressInterface $billingAddress */
+            $billingAddress = $quote->getBillingAddress();
+            $billingAddress
+                ->setVatId($request->getInvoice()->getVatId())
+                ->setCompany($request->getInvoice()->getCompany());
+            $quote->setBillingAddress($billingAddress);
+            $this->cartRepository->save($quote);
+
+            $quote = $this->getQuoteByPayeyeCartId->getQuote($cartId);
+        }
+
         $this->setIsPayeyeOnQuote->set($quote);
 
         $this->compareCartHash($request->getCartHash(), $quote, (bool)$request->getShipping());
@@ -179,6 +201,7 @@ class Order implements OrderInterface
                     $quote->setCheckoutMethod(Onepage::METHOD_REGISTER);
                 }
             }
+
             $orderId = $this->cartManagement->placeOrder($quote->getId());
         } catch (LocalizedException $e) {
             $this->errorResponse->throw(new CouldNotSaveException($e->getMessage()));
