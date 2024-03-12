@@ -23,6 +23,14 @@ define([
                 var updatedPayEyeData = this.prepareDataFromCart(updatedData);
                 var payEyeCartUpdateEvent = new CustomEvent('payeye-cart-update', {detail: updatedPayEyeData});
                 document.dispatchEvent(payEyeCartUpdateEvent);
+
+                if (!updatedPayEyeData) {
+                    return;
+                }
+
+                if (!this.issetEventListener) {
+                    this.addChangeEventListener(updatedPayEyeData);
+                }
             }, this);
         },
 
@@ -34,6 +42,30 @@ define([
                 deepLink: data.deepLink,
                 cart: data.cart
             }
+        },
+
+        addChangeEventListener: function(updatedPayEyeData) {
+            this.issetEventListener = true;
+
+            if (!updatedPayEyeData.cart.id) return;
+
+            var updateRequestInterval = setInterval(function () {
+                var serviceUrl = `rest/V${updatedPayEyeData.apiVersion}/api-payeye/widget/status?cartId=${updatedPayEyeData.cart.id}`;
+
+                $.ajax({
+                    url: urlBuilder.build(serviceUrl),
+                    type: 'GET',
+                    cache: true
+                }).done(function (response) {
+                    if (!response.open) return;
+
+                    if (response.status !== this.lastStatus) {
+                        var cartSections = ['cart'];
+                        customerData.invalidate(cartSections);
+                        customerData.reload(cartSections, true);
+                    }
+                }.bind(this));
+            }.bind(this), 5000);
         }
     });
 });
