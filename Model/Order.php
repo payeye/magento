@@ -13,10 +13,10 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\UrlInterface;
 use Magento\Quote\Api\Data\CartInterface as MagentoCartInterface;
-use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Api\CartManagementInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Api\OrderStatusHistoryRepositoryInterface;
+use PayEye\PayEye\Api\UpdateQuoteAddressInterface;
 use Magento\Sales\Model\Order as MagentoOrder;
 use Magento\Store\Model\StoreManagerInterface;
 use PayEye\Lib\Exception\OrderFailedException;
@@ -68,9 +68,9 @@ class Order implements OrderInterface
     private SetIsPayeyeOnQuoteInterface $setIsPayeyeOnQuote;
     private AmountService $amountService;
     private OrderStatusHistoryRepositoryInterface $orderStatusHistoryRepository;
+    private UpdateQuoteAddressInterface $updateQuoteAddress;
     private LoggerInterface $logger;
     private Data $checkoutHelper;
-    private CartRepositoryInterface $cartRepository;
 
     /**
      * @param Config $config
@@ -89,9 +89,9 @@ class Order implements OrderInterface
      * @param SetIsPayeyeOnQuoteInterface $setIsPayeyeOnQuote
      * @param AmountService $amountService
      * @param OrderStatusHistoryRepositoryInterface $orderStatusHistoryRepository
+     * @param UpdateQuoteAddressInterface $updateQuoteAddress
      * @param LoggerInterface $logger
      * @param Data $checkoutHelper
-     * @param CartRepositoryInterface $cartRepository
      */
     public function __construct(
         Config $config,
@@ -110,12 +110,13 @@ class Order implements OrderInterface
         SetIsPayeyeOnQuoteInterface $setIsPayeyeOnQuote,
         AmountService $amountService,
         OrderStatusHistoryRepositoryInterface $orderStatusHistoryRepository,
+        UpdateQuoteAddressInterface $updateQuoteAddress,
         LoggerInterface $logger,
-        Data $checkoutHelper,
-        CartRepositoryInterface $cartRepository
+        Data $checkoutHelper
     ) {
         $this->logger = $logger;
         $this->orderStatusHistoryRepository = $orderStatusHistoryRepository;
+        $this->updateQuoteAddress = $updateQuoteAddress;
         $this->amountService = $amountService;
         $this->setIsPayeyeOnQuote = $setIsPayeyeOnQuote;
         $this->prepareOrderCreateRequestModel = $prepareOrderCreateRequestModel;
@@ -132,7 +133,6 @@ class Order implements OrderInterface
         $this->storeManager = $storeManager;
         $this->config = $config;
         $this->checkoutHelper = $checkoutHelper;
-        $this->cartRepository = $cartRepository;
     }
 
     /**
@@ -174,20 +174,14 @@ class Order implements OrderInterface
         );
 
         $this->checkIfCanProcess($request->toArray());
+
         $quote = $this->getQuoteByPayeyeCartId->getQuote($cartId);
+        $this->updateQuoteAddress->update($quote, $request);
 
-        if ($request->hasInvoice()) {
-            /** @var \Magento\Quote\Api\Data\AddressInterface $billingAddress */
-            $billingAddress = $quote->getBillingAddress();
-            $billingAddress
-                ->setVatId($request->getInvoice()->getTaxId())
-                ->setCompany($request->getInvoice()->getCompanyName());
-            $quote->setBillingAddress($billingAddress);
-            $this->cartRepository->save($quote);
-
-            $quote = $this->getQuoteByPayeyeCartId->getQuote($cartId);
-        }
-
+        /**
+         * @TODO Re-getting the quote to make setIsPayeyeOnQuote work.
+         */
+        $quote = $this->getQuoteByPayeyeCartId->getQuote($cartId);
         $this->setIsPayeyeOnQuote->set($quote);
 
         $this->compareCartHash($request->getCartHash(), $quote, (bool)$request->getShipping());
