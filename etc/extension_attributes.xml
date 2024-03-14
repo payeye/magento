@@ -4,9 +4,6 @@
     <extension_attributes for="Magento\Quote\Api\Data\CartInterface">
         <attribute code="isPayeye" type="int" />
     </extension_attributes>
-    <extension_attributes for="Magento\Quote\Api\Data\OrderInterface">
-        <attribute code="isPayeye" type="int" />
-    </extension_attributes>
     <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
         <attribute code="payeyePickupPoint" type="string" />
     </extension_attributes>

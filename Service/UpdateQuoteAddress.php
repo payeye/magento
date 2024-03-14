@@ -13,6 +13,8 @@ use Magento\Quote\Api\Data\AddressInterface;
 use Magento\Quote\Api\Data\AddressInterfaceFactory;
 use Magento\Quote\Api\Data\CartInterface as MagentoCartInterface;
 use PayEye\Lib\Cart\CartRequestModel;
+use PayEye\Lib\Model\Address;
+use PayEye\Lib\Order\OrderCreateRequestModel;
 use PayEye\Lib\Model\Billing;
 use PayEye\Lib\Model\Shipping;
 use PayEye\PayEye\Model\Config;
@@ -50,24 +52,34 @@ class UpdateQuoteAddress implements UpdateQuoteAddressInterface
 
     /**
      * @param MagentoCartInterface $quote
-     * @param CartRequestModel $request
+     * @param CartRequestModel|OrderCreateRequestModel $request
      * @return void
      */
-    public function update(MagentoCartInterface $quote, CartRequestModel $request): void
+    public function update(MagentoCartInterface $quote, CartRequestModel|OrderCreateRequestModel $request): void
     {
         if (!$request->getBilling() || !$request->getShipping() ||
             (!$request->getShippingProvider() && !$request->getShippingId())) {
             return;
         }
 
-        $billingAddress = $this->createAddress($request->getBilling());
-        $shippingAddress = $this->createAddress($request->getShipping());
+        $billingAddress = $this->createAddress($request->getBilling()->getAddress());
+        $shippingAddress = $this->createAddress($request->getShipping()->getAddress());
 
+        $billingAddress->setEmail($request->getBilling()->getEmail());
+        $billingAddress->setTelephone($request->getBilling()->getPhoneNumber());
+        $billingAddress->setFirstname($request->getBilling()->getFirstName());
+        $billingAddress->setLastname($request->getBilling()->getLastName());
 
-        if ($billingAddress->getEmail()) {
-            $shippingAddress->setEmail($billingAddress->getEmail());
-            $shippingAddress->setTelephone($billingAddress->getTelephone());
+        if ($request instanceof OrderCreateRequestModel && $request->hasInvoice()) {
+            $billingAddress = $this->createAddress($request->getInvoice()->getAddress());
+            $billingAddress->setVatId($request->getInvoice()->getTaxId());
+            $billingAddress->setCompany($request->getInvoice()->getCompanyName());
         }
+
+        $shippingAddress->setEmail($request->getBilling()->getEmail());
+        $shippingAddress->setTelephone($request->getBilling()->getPhoneNumber());
+        $shippingAddress->setFirstname($request->getShipping()->getFirstName());
+        $shippingAddress->setLastname($request->getShipping()->getLastName());
 
         $quote->getPayment()->setMethod('payeye');
 
@@ -97,23 +109,20 @@ class UpdateQuoteAddress implements UpdateQuoteAddressInterface
     }
 
     /**
-     * @param Billing|Shipping $requestAddress
+     * @param Address $address
      * @return AddressInterface
      */
-    private function createAddress($requestAddress): AddressInterface
+    private function createAddress(Address $requestAddress): AddressInterface
     {
         $address = $this->address->create();
-        $address->setFirstname($requestAddress->getFirstName());
-        $address->setLastname($requestAddress->getLastName());
-        $address->setEmail(get_class($requestAddress) === Billing::class ? $requestAddress->getEmail() : '');
-        $address->setCity($requestAddress->getAddress()->getCity());
-        $address->setCountryId($requestAddress->getAddress()->getCountry());
-        $address->setPostcode($requestAddress->getAddress()->getPostCode());
-        $address->setStreet($requestAddress->getAddress()->getStreet() . ' ' .
-            $requestAddress->getAddress()->getBuildingNumber() . ' ' .
-            $requestAddress->getAddress()->getFlatNumber()
+
+        $address->setCity($requestAddress->getCity());
+        $address->setCountryId($requestAddress->getCountry());
+        $address->setPostcode($requestAddress->getPostCode());
+        $address->setStreet($requestAddress->getStreet() . ' ' .
+            $requestAddress->getBuildingNumber() . ' ' .
+            $requestAddress->getFlatNumber()
         );
-        $address->setTelephone(get_class($requestAddress) === Billing::class ? $requestAddress->getPhoneNumber() : '');
 
         return $address;
     }
