@@ -55,4 +55,10 @@
             <resource ref="anonymous" />
         </resources>
     </route>
+    <route url="/V2/api-payeye/plugin/status" method="POST">
+        <service class="PayEye\PayEye\Api\PluginInterface" method="setStatus" />
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
 </routes>

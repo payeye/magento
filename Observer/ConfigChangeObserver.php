@@ -12,6 +12,8 @@ use Magento\Framework\Event\ObserverInterface;
 use PayEye\Lib\Auth\AuthConfig;
 use PayEye\Lib\Auth\AuthService;
 use PayEye\Lib\Auth\HashService;
+use PayEye\Lib\Enum\PluginEvents;
+use PayEye\Lib\Enum\PluginModes;
 use PayEye\Lib\Enum\SignatureFrom;
 use PayEye\Lib\Env\Config as PayEyeLibConfig;
 use PayEye\Lib\HttpClient\Model\RefreshCartRequest;
@@ -52,8 +54,8 @@ class ConfigChangeObserver implements ObserverInterface
         $publicKey = $this->config->getPublicKey();
         $privateKey = $this->config->getPrivateKey();
 
-        $pluginMode = $this->config->isTestMode() ? 'INTEGRATION' : 'PRODUCTION';
-        $pluginEven = $this->config->isEnabled() ? 'PLUGIN_ACTIVATED' : 'PLUGIN_DEACTIVATED';
+        $pluginMode = $this->config->isTestMode() ? PluginModes::PLUGIN_MODE_INTEGRATION : PluginModes::PLUGIN_MODE_PRODUCTION;
+        $pluginEven = $this->config->isEnabled() ? PluginEvents::PLUGIN_ACTIVATED : PluginEvents::PLUGIN_DEACTIVATED;
 
         $request = PluginStatusRequest::create(
             $this->config->getApiVersion(),

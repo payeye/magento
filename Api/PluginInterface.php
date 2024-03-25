@@ -14,4 +14,20 @@ interface PluginInterface
      * @return PluginStatusResponseModel
      */
     public function getStatus(string $signature): PluginStatusResponseModel;
+
+    /**
+     * @param string $shopIdentifier
+     * @param string $pluginEvent
+     * @param string $pluginMode
+     * @param string[] $signatureFrom
+     * @param string $signature
+     * @return PluginStatusResponseModel
+     */
+    public function setStatus(
+        string $shopIdentifier,
+        string $pluginEvent,
+        string $pluginMode,
+        array $signatureFrom,
+        string $signature
+    ): PluginStatusResponseModel;
 }
