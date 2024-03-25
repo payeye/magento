@@ -11,6 +11,7 @@ use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Paypal\Model\AbstractConfig;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
 
 class Config extends AbstractConfig
 {
@@ -25,7 +26,7 @@ class Config extends AbstractConfig
     private const XML_PATH_PAYEYE_UI_BOTTOM_DISTANCE = 'payeye/ui/bottom_distance';
     private const XML_PATH_PAYEYE_UI_Z_INDEX = 'payeye/ui/z_index';
 
-    private const PLUGIN_VERSION = '1.1.5';
+    private const PLUGIN_VERSION = '1.1.6';
 
     private const API_VERSION = 2;
     private const API_URL = 'https://prod3a-api.payeye.com/ecommerce-transaction';
@@ -33,15 +34,23 @@ class Config extends AbstractConfig
 
     private ScopeConfigInterface $scopeConfig;
     private Json $jsonSerializer;
+    private WriterInterface $configWriter;
 
     /**
      * @param ScopeConfigInterface $scopeConfig
      * @param Json $jsonSerializer
+     * @param WriterInterface $configWriter
      */
-    public function __construct(ScopeConfigInterface $scopeConfig, Json $jsonSerializer)
+    public function __construct(
+        ScopeConfigInterface $scopeConfig,
+        Json $jsonSerializer,
+        WriterInterface $configWriter
+    )
     {
         $this->jsonSerializer = $jsonSerializer;
         $this->scopeConfig = $scopeConfig;
+        $this->configWriter = $configWriter;
+
         parent::__construct($scopeConfig);
     }
 
@@ -141,6 +150,22 @@ class Config extends AbstractConfig
             self::XML_PATH_PAYEYE_TEST_MODE,
             ScopeInterface::SCOPE_STORE
         );
+    }
+
+    /**
+     * @return void
+     */
+    public function enableTestMode()
+    {
+        $this->configWriter->save(self::XML_PATH_PAYEYE_TEST_MODE, 1, ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
+    }
+
+    /**
+     * @return void
+     */
+    public function disableTestMode()
+    {
+        $this->configWriter->save(self::XML_PATH_PAYEYE_TEST_MODE, 0, ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
     }
 
     /**

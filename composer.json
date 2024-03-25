@@ -3,7 +3,8 @@
   "description": "Official PayEye integration plugin for Magento",
   "require": {
     "php": ">=7.4",
-    "chillerlan/php-qrcode": "^4.3"
+    "chillerlan/php-qrcode": "^4.3",
+    "payeye/lib": "1.23.2",
   },
   "type": "magento2-module",
   "authors": [
