@@ -26,6 +26,7 @@ class Config extends AbstractConfig
     private const XML_PATH_PAYEYE_UI_SIDE_DISTANCE = 'payeye/ui/side_distance';
     private const XML_PATH_PAYEYE_UI_BOTTOM_DISTANCE = 'payeye/ui/bottom_distance';
     private const XML_PATH_PAYEYE_UI_Z_INDEX = 'payeye/ui/z_index';
+    private const XML_PATH_PAYEYE_UI_ON_CLICK = 'payeye/ui/on_click';
 
     private const PLUGIN_VERSION = '1.1.7';
 
@@ -75,6 +76,17 @@ class Config extends AbstractConfig
     {
         return $this->scopeConfig->isSetFlag(
             self::XML_PATH_PAYEYE_ENABLED,
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOnClick(): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            self::XML_PATH_PAYEYE_UI_ON_CLICK,
             ScopeInterface::SCOPE_STORE
         );
     }

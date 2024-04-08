@@ -78,6 +78,13 @@
                     <label>z-index (pixels)</label>
                     <validate>validate-zero-or-greater validate-digits</validate>
                 </field>
+                <field id="on_click" translate="label" sortOrder="40" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>On-click</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <depends>
+                        <field id="disable">1</field>
+                    </depends>
+                </field>
             </group>
         </section>
     </system>

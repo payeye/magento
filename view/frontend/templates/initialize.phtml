@@ -5,6 +5,7 @@ $uiSide = $helper->getUiSide();
 $uiSideDistance = $helper->getUiSideDistance();
 $uiBottomDistance = $helper->getUiBottomDistance();
 $uiZIndex = $helper->getUiZIndex();
+$widgetMode = $helper->isOnClick() ? 'ON_CLICK' : 'FLOATING';
 ?>
 
 <script>
@@ -16,6 +17,8 @@ $uiZIndex = $helper->getUiZIndex();
             "zIndex": <?= $uiZIndex ?>,
             "position": {"bottom": "<?= $uiBottomDistance ?>px", "side": "<?= $uiSideDistance ?>px"},
             "mobile": {"open": false}
-        }
+        },
+        "widgetMode": "<?= $widgetMode ?>",
+        "widgetModeBtnStyle": "STYLED_GREEN"
     }
 </script>
