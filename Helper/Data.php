@@ -45,4 +45,9 @@ class Data extends AbstractHelper
     {
         return $this->config->getUiZIndex();
     }
+
+    public function isOnClick()
+    {
+        return $this->config->isOnClick();
+    }
 }
