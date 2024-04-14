@@ -18,6 +18,7 @@ class Config extends AbstractConfig
 {
     private const XML_PATH_PAYEYE_ENABLED = 'payeye/general/enable';
     private const XML_PATH_PAYEYE_TEST_MODE = 'payeye/general/test_mode';
+    private const XML_PATH_PAYEYE_SANDBOX = 'payeye/general/sandbox';
     private const XML_PATH_PAYEYE_SHOP_ID = 'payeye/general/shop_id';
     private const XML_PATH_PAYEYE_PUBLIC_KEY = 'payeye/general/public_key';
     private const XML_PATH_PAYEYE_PRIVATE_KEY = 'payeye/general/private_key';
@@ -31,8 +32,11 @@ class Config extends AbstractConfig
     private const PLUGIN_VERSION = '1.1.7';
 
     private const API_VERSION = 2;
+
     private const API_URL = 'https://prod3a-api.payeye.com/ecommerce-transaction';
     private const API_DEEP_LINK_URL = 'https://payment.payeye.com/order';
+
+    private const API_URL_SANDBOX = 'https://sandbox-api.payeye.com/ecommerce-transaction';
 
     private ScopeConfigInterface $scopeConfig;
     private Json $jsonSerializer;
@@ -76,6 +80,17 @@ class Config extends AbstractConfig
     {
         return $this->scopeConfig->isSetFlag(
             self::XML_PATH_PAYEYE_ENABLED,
+            ScopeInterface::SCOPE_STORE
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSandbox(): bool
+    {
+        return $this->scopeConfig->isSetFlag(
+            self::XML_PATH_PAYEYE_SANDBOX,
             ScopeInterface::SCOPE_STORE
         );
     }
@@ -156,6 +171,10 @@ class Config extends AbstractConfig
      */
     public function getApiUrl(): string
     {
+        if ($this->isSandbox()) {
+            return self::API_URL_SANDBOX;
+        }
+
         return self::API_URL;
     }
 

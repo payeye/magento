@@ -15,6 +15,13 @@
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
                 </field>
+                <field id="sandbox" translate="label" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sandbox</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <depends>
+                        <field id="enable">1</field>
+                    </depends>
+                </field>
                 <field id="test_mode" translate="label" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Test mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
